@@ -14,7 +14,11 @@ endif("${CMAKE_BUILD_TYPE}" STREQUAL "")
 set(CMAKE_COLOR_MAKEFILE ON)
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
-add_definitions(-Wall)
+if( NOT MSVC )
+	add_definitions(-Wall)
+else()
+	add_definitions( -D_CRT_SECURE_NO_WARNINGS )
+endif()
 
 # Debug build
 message("-- Build type: ${CMAKE_BUILD_TYPE}")
@@ -151,6 +155,10 @@ add_subdirectory(ftdi_eeprom)
 add_subdirectory(examples)
 add_subdirectory(packages)
 add_subdirectory(test)
+
+if( MSVC )
+    set_target_properties(ftdi1 PROPERTIES OUTPUT_NAME "libftdi1")
+endif ()
 
 # PkgConfig
 set(prefix      ${CMAKE_INSTALL_PREFIX})

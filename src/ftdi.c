@@ -1012,13 +1012,14 @@ int ftdi_usb_close(struct ftdi_context *ftdi)
    The fractional part has frac_code encoding
 */
 static int ftdi_to_clkbits_AM(int baudrate, unsigned long *encoded_divisor)
-
 {
     static const char frac_code[8] = {0, 3, 2, 4, 1, 5, 6, 7};
     static const char am_adjust_up[8] = {0, 0, 0, 1, 0, 3, 2, 1};
     static const char am_adjust_dn[8] = {0, 0, 0, 1, 0, 1, 2, 3};
-    int divisor, best_divisor, best_baud, best_baud_diff;
-    divisor = 24000000 / baudrate;
+    int divisor = 24000000 / baudrate;
+    int best_divisor;
+    int best_baud;
+    int best_baud_diff;
     int i;
 
     // Round down to supported fraction (AM only)
@@ -1393,7 +1394,7 @@ int ftdi_write_data(struct ftdi_context *ftdi, const unsigned char *buf, int siz
     return offset;
 }
 
-static void ftdi_read_data_cb(struct libusb_transfer *transfer)
+static void LIBUSB_CALL ftdi_read_data_cb(struct libusb_transfer *transfer)
 {
     struct ftdi_transfer_control *tc = (struct ftdi_transfer_control *) transfer->user_data;
     struct ftdi_context *ftdi = tc->ftdi;
@@ -1475,7 +1476,7 @@ static void ftdi_read_data_cb(struct libusb_transfer *transfer)
 }
 
 
-static void ftdi_write_data_cb(struct libusb_transfer *transfer)
+static void LIBUSB_CALL ftdi_write_data_cb(struct libusb_transfer *transfer)
 {
     struct ftdi_transfer_control *tc = (struct ftdi_transfer_control *) transfer->user_data;
     struct ftdi_context *ftdi = tc->ftdi;
